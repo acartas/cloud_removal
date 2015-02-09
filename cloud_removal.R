@@ -32,15 +32,15 @@ nRow = nrow(rStack[[1]])
 nCol = ncol(rStack[[1]])
 
 #create blank stack for results
-outR <- matrix(nrow=nRow,ncol=nCol)(#raster(ext=rStack[[1]]@extent, nrows=nRow, ncols=nCol)
+outR <- matrix(nrow=nRow,ncol=nCol)#raster(ext=rStack[[1]]@extent, nrows=nRow, ncols=nCol)
 outG <- matrix(nrow=nRow,ncol=nCol)#raster(ext=rStack[[1]]@extent, nrows=nRow, ncols=nCol)
 outB <- matrix(nrow=nRow,ncol=nCol)#raster(ext=rStack[[1]]@extent, nrows=nRow, ncols=nCol)
 
 #should be 1:nRow and 1:nCol, set smaller for testing!
-for (curRow in c(4000:4100)){
+for (curRow in c(4000:4020)){
   
   curRowValues <- lapply(rStack,values,row=curRow) #stores RGB for row 1 for all images  
-  for (curCol in c(2000:2100)){#proceed through column-by-column
+  for (curCol in c(2000:2200)){#proceed through column-by-column
     red <- vector(mode="integer")
     blue <- vector(mode="integer")
     green <- vector(mode="integer")
@@ -52,10 +52,18 @@ for (curRow in c(4000:4100)){
       curBlue  = curRowValues[[curFile]][[curCol,3]]
       blue <- c(blue,curBlue)
     }
-    outR[curRow,curCol] <- sort(red,partial=numFiles-1)[numFiles-1])
+    outR[curRow,curCol] <- sort(red,partial=numFiles-1)[numFiles-1]
     outG[curRow,curCol] <- sort(green,partial=numFiles-1)[numFiles-1]
     outB[curRow,curCol] <- sort(blue, partial=numFiles-1)[numFiles-1]
     cat("Row ",curRow," Col ",curCol,"\ --> "); 
     cat("Red: ", outR[curRow,curCol], " Green: ", outG[curRow,curCol], " Blue: ", outB[curRow,curCol],"\n")
   }
 }
+
+#convert final output to plot/file (currently only testing with subset)
+outfilename = paste("path08row60/output_",as.integer(Sys.time()),".jpg",sep="")
+file.copy(filenames[1], oufilename)
+rasR = raster(outR,template=rStack[[1]])
+rasG = raster(outG,template=rStack[[1]])
+rasB = raster(outB,template=rStack[[1]])
+
